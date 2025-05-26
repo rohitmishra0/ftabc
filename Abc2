@@ -1,0 +1,271 @@
+. Architecture Solution Design
+Frontend (Angular):
+
+UI components for Home, Login, Signup, Course View, Profile, XP Purchase
+
+Communicates with backend via REST APIs
+
+Hosted on GitHub Pages
+
+Backend (Spring Boot):
+
+RESTful APIs for user actions
+
+Handles XP logic, course management, payments
+
+Hosted on Render/Railway/AWS/GCP
+
+Database (Appwrite):
+
+Auth module: handles user login/signup
+
+Collections: users, courses, enrollments, payments, transactions, skills
+
+Payment Gateway:
+
+Razorpay or Stripe for handling XP purchases
+
+Integrated into Spring Boot backend
+
+Architecture Diagram (Conceptual):
+
+rust
+Copy code
+[Frontend (Angular)]  <--->  [Backend (Spring Boot)]  <--->  [Appwrite DB]
+          |                              |
+          |                              v
+          +-----> Payment Gateway <------+
+5. Security Requirements
+Authentication: JWT-based login using Appwrite Auth or Google OAuth
+
+Authorization: Role-based API access (only creators can post courses, only logged-in users can enroll)
+
+Input Validation: On both frontend (Angular forms) and backend (Spring validators)
+
+Secure Communication: HTTPS enforced on all endpoints
+
+Data Protection: Passwords hashed; sensitive operations secured
+
+Payment Safety: Webhooks validated with HMAC signatures (Razorpay/Stripe)
+
+6. Extra Functionality for the Solution
+XP Transaction History: Users can view detailed logs of where XP was spent/earned
+
+Course Recommendations: Show “Courses You May Like” based on enrollments
+
+Notifications: Email confirmations for XP purchases and enrollments
+
+Referral System (Future): Earn XP for referring new users
+
+7. Reporting
+Admin Reports (future scope):
+
+Total number of users
+
+Most popular categories/courses
+
+XP purchased vs. XP spent statistics
+
+User Reports:
+
+XP usage history
+
+Course engagement metrics
+
+Payment receipt history (via email & dashboard)
+
+8. Integration
+Appwrite: User authentication, DB storage, and file hosting (course videos, thumbnails)
+
+Payment Gateway (Razorpay/Stripe): Integrated into Spring Boot backend for XP purchases
+
+Email Service: SendGrid or Appwrite built-in email to notify users post purchase/enrollment
+
+9. Data Migration
+Initial data: Skills/categories (IT, Music, Language...) manually seeded in Appwrite
+
+Future migration:
+
+Export/import JSON schema from Appwrite console
+
+Write migration scripts if migrating to SQL in future
+
+Backup policies using Appwrite’s export features
+
+Would you like this exported in PDF or DOCX format, or want me to include a visual architecture diagram as well?
+
+
+
+
+
+
+You said:
+Break the architecture design into high level and low level design
+
+
+ChatGPT said:
+Here’s how we can break down the Architecture Solution Design of your Bartr – Skill Barter System into High-Level Design (HLD) and Low-Level Design (LLD):
+
+High-Level Design (HLD)
+Objective: Provide a macro view of the system, its components, and interactions.
+
+1. System Overview
+Bartr is a skill exchange platform where XP acts as a virtual credit. Users can create and enroll in courses by spending or earning XP.
+
+2. Component Overview
+Component	Technology	Responsibility
+Frontend	Angular	UI rendering, routing, form validations, UX
+Backend	Spring Boot	Business logic, REST API, XP logic, payment handling
+Database	Appwrite DB	Storage of users, courses, skills, transactions
+Authentication	Appwrite Auth	User login/signup, session management
+Payment Gateway	Razorpay/Stripe	XP purchase via INR payments
+Deployment	GitHub Pages (frontend) + Render/Heroku (backend)	Hosting
+
+3. High-Level Architecture Diagram
+pgsql
+Copy code
+                +----------------------+
+                |   User (Browser)     |
+                +----------+-----------+
+                           |
+                           v
+                  +--------+---------+
+                  |  Angular Frontend |     (Hosted on GitHub Pages)
+                  +--------+---------+
+                           |
+              REST API     |
+                           v
+                  +--------+----------+
+                  |   Spring Boot API  |     (Hosted on Render/Railway)
+                  +--------+----------+
+                           |
+           +---------------+------------------+
+           |                                  |
+           v                                  v
+  +------------------+              +---------------------+
+  |   Appwrite DB    |              |  Razorpay / Stripe   |
+  +------------------+              +---------------------+
+Low-Level Design (LLD)
+Objective: Break down individual modules, endpoints, logic, and data flow.
+
+1. Frontend (Angular)
+Modules:
+
+auth: login, signup, password reset
+
+dashboard: user profile, enrolled/created courses
+
+course: course list, detail, creation
+
+xp: purchase XP form
+
+Routing:
+
+/login, /signup, /courses, /profile, /purchase-xp
+
+Services:
+
+CourseService: fetch, create, enroll courses
+
+UserService: profile, XP balance
+
+PaymentService: initiate XP purchase
+
+2. Backend (Spring Boot)
+Controllers (REST Endpoints):
+
+Controller	Endpoint	Method	Purpose
+AuthController	/api/auth/login	POST	Login and return JWT
+/api/auth/register	POST	Signup using Appwrite
+UserController	/api/user/profile	GET	Get user info
+/api/user/xp	GET	Get XP balance
+CourseController	/api/courses	GET	List all courses
+/api/courses	POST	Create a course
+/api/courses/enroll	POST	Enroll in a course
+XPController	/api/xp/purchase	POST	Initiate XP purchase
+PaymentWebhook	/api/payment/webhook	POST	Handle Razorpay callback
+
+Service Layer (Business Logic):
+
+XpService: XP deduction, transfer, refund
+
+CourseService: category XP cost mapping, validation
+
+PaymentService: order verification, XP top-up
+
+EnrollmentService: handles course access logic
+
+Model Layer:
+
+User, Course, Enrollment, Transaction, Payment, Skill
+
+3. Appwrite (Database & Auth)
+Collections:
+
+users: id, email, xp, avatar, phone
+
+courses: id, title, description, skill_id, xp_cost, creator_id
+
+skills: id, name, xp_cost
+
+enrollments: learner_id, course_id, date
+
+payments: user_id, amount, xp_purchased, mode
+
+transactions: user_id, course_id, amount, type (XP_SPENT, XP_GAINED)
+
+Authentication:
+
+Appwrite OAuth and JWT tokens
+
+Password encryption & email confirmation
+
+4. Payment Integration (Stripe / Razorpay)
+Frontend:
+
+Collect XP purchase intent
+
+Show total price (XP × ₹5)
+
+Trigger payment modal from Razorpay SDK
+
+Backend:
+
+On successful payment:
+
+Validate payment via webhook
+
+Update XP in users table
+
+Log transaction in payments and transactions
+
+5. XP Transaction Logic (Core)
+java
+Copy code
+public boolean enrollCourse(int courseId, int learnerId) {
+    int xpRequired = getCourseXP(courseId);
+    int learnerXP = getUserXP(learnerId);
+
+    if (learnerXP < xpRequired) return false;
+
+    deductXP(learnerId, xpRequired);
+    addXP(getCourseCreator(courseId), xpRequired);
+    createEnrollment(courseId, learnerId);
+    logTransaction(learnerId, courseId, xpRequired, "XP_SPENT");
+    logTransaction(creatorId, courseId, xpRequired, "XP_GAINED");
+    return true;
+}
+Would you like this converted into a downloadable document or a diagram file?
+
+
+
+
+
+
+
+
+
+
+Skills
+
+
