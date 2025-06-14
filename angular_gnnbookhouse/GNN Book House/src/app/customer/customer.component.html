@@ -1,0 +1,19 @@
+<h2>Available Books</h2>
+
+<table id="displayTable" border="1">
+  <!--fill the code-->
+  <tr>
+    <th>ISBN</th>
+    <th>Book Name</th>
+    <th>Author</th>
+    <th>Price ($)</th>
+    <th>Quantity</th>
+  </tr>
+  <tr *ngFor="let book of books">
+    <td>{{ book.isbn }}</td>
+    <td>{{ book.bookName }}</td>
+    <td>{{ book.author }}</td>
+    <td>{{ book.price }}</td>
+    <td>{{ book.quantity }}</td>
+  </tr>
+</table>
