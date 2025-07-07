@@ -1,0 +1,101 @@
+📄 Feasibility Study Report
+Project Title: Testing of PortfolioPro Web Application
+Prepared By: Mahendra Singh
+Date: [Insert Date]
+Tools Used: Java, Selenium, TestNG, Eclipse IDE
+
+1. Project Overview
+PortfolioPro is a responsive web application designed to help users create, manage, and share digital portfolios. The main modules tested include:
+
+Portfolio Creation Wizard (Basic Info, Contact, Content, Image, Theme)
+
+Portfolio Page (final display, Edit, Copy Link, Share functionalities)
+
+Before entering the structured testing phase, one full end-to-end automated sanity test was conducted covering critical workflows. This passed successfully and served as the gate for comprehensive manual and automated testing of 48 detailed test cases.
+
+2. Purpose of the Feasibility Study
+This feasibility study assesses the viability and effectiveness of the QA testing project for PortfolioPro. It evaluates:
+
+Test coverage adequacy
+
+Technical tool alignment (Java + Selenium + TestNG)
+
+Automation strategy scalability
+
+Overall test process integration within the Agile SDLC
+
+3. Scope of Testing
+✅ In-Scope:
+Functional testing of Portfolio Creation and Portfolio Page modules
+
+UI & UX validation
+
+Regression & integration testing
+
+Automation testing for high-priority regression flows
+
+❌ Out-of-Scope:
+Backend database validation (direct queries)
+
+Load/stress/performance testing
+
+Multi-language (i18n/l10n) testing
+
+External integrations
+
+4. Test Automation Framework Overview
+You designed a robust framework using:
+
+Component	Details
+Language	Java
+Framework	Selenium WebDriver + TestNG
+IDE	Eclipse
+Test Reports	TestNG-generated HTML/XML reports
+Design	Modular Page Object Model (POM) architecture
+Execution	Local parallel execution (with scope for CI/CD later)
+
+The test suite includes:
+
+Dynamic locators for form fields and buttons
+
+Assertion checks for input validations and theme previews
+
+Utility classes for browser handling, screenshots, and reusable waits
+
+5. Test Execution Summary
+✅ 48 test cases executed successfully (functional + regression)
+
+🚫 Defects Identified: [List count from defect tracker]
+
+🧪 Automation Coverage: ~70% for stable regression workflows
+
+📄 Deliverables:
+
+Test Plan
+
+Test Scenarios & Cases (Excel)
+
+Defect Logs
+
+RTM
+
+Test Summary Report
+
+6. Resource Feasibility
+Aspect	Feasibility Comment
+Tools & IDE	Java, Selenium, TestNG, Eclipse—all open and stable
+Environment	Web-based, cross-browser tested on Chrome & Edge
+Test Data	Dummy data used; reset after each execution cycle
+Test Management	Excel sheets with traceability matrix included
+
+7. Risk Analysis
+Risk	Mitigation
+Changes in PortfolioPro FRD mid-sprint	Agile communication with BA & dev
+Theme rendering delays or bugs	Regression test cycle before release
+Manual testing fatigue	Automated suite maintained for regression
+Environment inconsistencies	Dedicated test environment ensured
+
+8. Feasibility Conclusion
+Given the maturity of the automation framework, successful initial end-to-end test execution, and availability of the required tools, the PortfolioPro testing project is highly feasible. The testing strategy efficiently validates critical user flows, ensures quality, and supports future scalability for CI/CD and performance testing integration.
+
+This initiative demonstrates solid alignment with agile best practices, and the automated framework provides long-term value through maintainability and reusability.
